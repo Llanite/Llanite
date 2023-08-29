@@ -180,6 +180,53 @@ impl State {
     }
 
     pub(crate) fn render(&mut self) -> Result<(), wgpu::SurfaceError> {
-        todo!("Render")
+        // Get the current texture
+        let out = self.surface.get_current_texture()?;
+
+        let view = out
+            .texture
+            .create_view(&wgpu::TextureViewDescriptor::default());
+
+        // Create a render encoder
+        let mut encoder = self
+            .device
+            .create_command_encoder(&wgpu::CommandEncoderDescriptor {
+                label: Some("Render Encoder")
+            });
+
+        // Make a render pass
+        {
+            let mut render_pass = encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
+                label: Some("Render Pass"),
+                color_attachments: &[Some(wgpu::RenderPassColorAttachment {
+                    view: &view,
+                    resolve_target: None,
+                    ops: wgpu::Operations {
+                        // Clear the screen
+                        load: wgpu::LoadOp::Clear(wgpu::Color {
+                            r: 0.25,
+                            g: 0.25,
+                            b: 0.25,
+                            a: 1.0,
+                        }),
+
+                        store: true,
+                    }
+                })],
+
+                depth_stencil_attachment: None,
+            });
+
+            render_pass.set_pipeline(&self.render_pipeline);
+            render_pass.draw(0..3, 0..1);
+        }
+
+        // Submit the command
+        self.queue.submit(std::iter::once(encoder.finish()));
+
+        // Present
+        out.present();
+
+        Ok(())
     }
 }
