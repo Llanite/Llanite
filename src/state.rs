@@ -2,6 +2,8 @@ use winit::{event::*, window::Window, dpi::PhysicalSize};
 use wgpu::{Surface, Device, Queue, SurfaceConfiguration, RenderPipeline};
 use crate::errors::BoosterError;
 
+// TODO: Exterminate all `unwraps`.
+
 // TODO: Only make public what needs to be public.
 pub struct State {
     pub(crate) surface: Surface,
@@ -17,6 +19,7 @@ impl State {
     /// Create a new state.
     pub async fn new(window: Window) -> Result<Self, BoosterError> {
         let size = window.inner_size();
+        let (width, height) = (size.width, size.height);
 
         // All backends:
         // * Vulkan
@@ -53,5 +56,24 @@ impl State {
             ).await.unwrap();
         
         let surface_caps = surface.get_capabilities(&adapter);
+
+        let surface_format = surface_caps
+            .formats
+            .iter()
+            .copied()
+            .find(|format| format.describe().srgb)
+            .unwrap_or(surface_caps.formats[0]);
+
+        let config = wgpu::SurfaceConfiguration {
+            usage: wgpu::TextureUsages::RENDER_ATTACHMENT,
+            present_mode: surface_caps.present_modes[0],
+            alpha_mode: surface_caps.alpha_modes[0],
+            format: surface_format,
+            view_formats: vec![],
+            width,
+            height,
+        };
+
+        surface.configure(&device, &config);
     }
 }
