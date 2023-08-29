@@ -1,5 +1,5 @@
 use crate::config::Config;
-use crate::booster::booster;
+use crate::booster;
 
 use std::sync::{Arc, Mutex};
 use ecs_rust::world::World;
