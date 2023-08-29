@@ -1,9 +1,19 @@
-mod config;
+use crate::config::Config;
 
-use config::Config;
+use std::sync::{Arc, Mutex, MutexGuard};
+use ecs_rust::world::World;
 
-#[derive(Default)]
-pub struct Llanite {}
+pub struct Llanite {
+    world: Arc<Mutex<World>>,
+}
+
+impl Default for Llanite {
+    fn default() -> Self {
+        let world = Arc::new(Mutex::new(World::new()));
+
+        Self { world }
+    }
+}
 
 impl Llanite {
     pub fn start(&self, config: Config) {
