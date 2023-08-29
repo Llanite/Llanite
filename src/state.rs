@@ -55,20 +55,23 @@ impl State {
                 None,
             ).await.unwrap();
         
-        let surface_caps = surface.get_capabilities(&adapter);
+        let swapchain_capabilities = surface.get_capabilities(&adapter);
 
-        let surface_format = surface_caps
-            .formats
-            .iter()
-            .copied()
-            .find(|format| format.describe().srgb)
-            .unwrap_or(surface_caps.formats[0]);
+        // Only works on older version of wgpu
+        // let swapchain_format = swapchain_capabilities
+            // .formats
+            // .iter()
+            // .copied()
+            // .find(|format| format.describe().srgb)
+            // .unwrap_or(swapchain_capabilities.formats[0]);
+
+        let swapchain_format = swapchain_capabilities.formats[0];
 
         let config = wgpu::SurfaceConfiguration {
             usage: wgpu::TextureUsages::RENDER_ATTACHMENT,
-            present_mode: surface_caps.present_modes[0],
-            alpha_mode: surface_caps.alpha_modes[0],
-            format: surface_format,
+            present_mode: swapchain_capabilities.present_modes[0],
+            alpha_mode: swapchain_capabilities.alpha_modes[0],
+            format: swapchain_format,
             view_formats: vec![],
             width,
             height,
