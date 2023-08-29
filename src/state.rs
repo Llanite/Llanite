@@ -27,7 +27,7 @@ impl State {
         // * DX12
         // * Browser WebGPU
 
-        let instace = wgpu::Instance::new(wgpu::InstanceDescriptor {
+        let instance = wgpu::Instance::new(wgpu::InstanceDescriptor {
             dx12_shader_compiler: Default::default(),
             backends: wgpu::Backends::all(),
         });
@@ -35,10 +35,10 @@ impl State {
         let surface = unsafe { instance.create_surface(&window) }
             .map_err(|_| BoosterError::SurfaceFailure)?;
 
-        let adapter = instace
+        let adapter = instance
             .request_adapter(&wgpu::RequestAdapterOptionsBase {
                 power_preference: wgpu::PowerPreference::default(),
-                comptabile_surface: Some(&surface),
+                compatible_surface: Some(&surface),
                 force_fallback_adapter: false,
             }).await.ok_or(BoosterError::NoGPU)?;
 
@@ -77,7 +77,7 @@ impl State {
         surface.configure(&device, &config);
 
         let shader = device
-            .create_shader_module(wgpu::include_wgsl!("base_shaders/triangle.wgsl"));
+            .create_shader_module(wgpu::include_wgsl!("shaders/triangle.wgsl"));
 
         let render_pipeline_layout =
             device.create_pipeline_layout(&wgpu::PipelineLayoutDescriptor {
@@ -161,7 +161,7 @@ impl State {
 
             self.surface.configure(&self.device, &self.config);
         } else {
-            Err(BoosterError::ResizeFailure)
+            return Err(BoosterError::ResizeFailure);
         }
 
         Ok(())
@@ -174,5 +174,9 @@ impl State {
 
     pub(crate) fn update(&mut self) {
         // Nothing to update yet
+    }
+
+    pub(crate) fn render(&mut self) -> Result<(), wgpu::SurfaceError> {
+        todo!("Render")
     }
 }
