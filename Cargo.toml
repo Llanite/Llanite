@@ -4,3 +4,6 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+ecs_rust = "0.0.4"
+wgpu = "0.17.0"
+winit = "0.28.6"
