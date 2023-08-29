@@ -144,4 +144,35 @@ impl State {
             render_pipeline,
         })
     }
+
+    pub fn window(&self) -> &Window {
+        &self.window
+    }
+
+    pub fn resize(
+        &mut self,
+        new: PhysicalSize<u32>
+    ) -> Result<(), BoosterError> {
+        if new.width > 0 && new.height > 0 {
+            self.size = new;
+
+            self.config.width = new.width;
+            self.config.height = new.height;
+
+            self.surface.configure(&self.device, &self.config);
+        } else {
+            Err(BoosterError::ResizeFailure)
+        }
+
+        Ok(())
+    }
+
+    pub(crate) fn input(&mut self, event: &WindowEvent) -> bool {
+        // Allow the event loop to continue despite input.
+        false
+    }
+
+    pub(crate) fn update(&mut self) {
+        // Nothing to update yet
+    }
 }
