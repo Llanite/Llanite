@@ -21,3 +21,8 @@ features = [ "tracing-log" ]
 [lib]
 name = "llanite"
 path = "src/lib.rs"
+
+[profile.release]
+codegen-units = 1
+strip = true
+lto = true
