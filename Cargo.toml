@@ -2,6 +2,11 @@
 name = "llanite"
 version = "0.1.0"
 edition = "2021"
+authors = [ "Ben McAvoy <Ben.Mcavoy@tutanota.com>" ]
+license = "MIT"
+homepage = "https://github.com/Llanite/Llanite"
+repository = "https://github.com/Llanite/Llanite"
+description = "A layered game engine wrote for performance and flexibility."
 
 [dependencies]
 ecs_rust = "0.0.4"
