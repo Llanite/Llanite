@@ -1,9 +1,12 @@
 use std::sync::Arc;
 
-use crate::{errors::{BoosterError, PipelineError}, pipeline_composer::PipelineComposer};
+use crate::{
+    errors::{BoosterError, PipelineError},
+    pipeline_composer::PipelineComposer,
+};
+use tracing::error;
 use wgpu::{Device, Queue, RenderPipeline, Surface, SurfaceConfiguration};
 use winit::{dpi::PhysicalSize, event::*, window::Window};
-use tracing::error;
 
 // TODO: Exterminate all `unwraps`.
 
