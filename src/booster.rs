@@ -1,7 +1,6 @@
-/// Booster. The file where everything kicks off in the engine loop.
-
-use crate::errors::BoosterError;
 use crate::config::Config;
+/// Booster. The file where everything kicks off in the engine loop.
+use crate::errors::BoosterError;
 use crate::state::State;
 
 use winit::dpi::PhysicalSize;
@@ -31,61 +30,59 @@ pub async fn launch(config: Config) -> Result<(), BoosterError> {
 
     let mut state = State::new(window).await?;
 
-    event_loop.run(move |event, _, control_flow| {
-        match event {
-            Event::WindowEvent {
-                ref event,
-                window_id,
-            } if window_id == state.window().id() => {
-                if !state.event(event) {
-                    match event {
-                        WindowEvent::CloseRequested
-                        | WindowEvent::KeyboardInput {
-                            input:
-                                KeyboardInput {
-                                    state: ElementState::Pressed,
-                                    virtual_keycode: Some(VirtualKeyCode::Escape),
-                                    ..
-                                },
-                            ..
-                        } => *control_flow = ControlFlow::Exit,
+    event_loop.run(move |event, _, control_flow| match event {
+        Event::WindowEvent {
+            ref event,
+            window_id,
+        } if window_id == state.window().id() => {
+            if !state.event(event) {
+                match event {
+                    WindowEvent::CloseRequested
+                    | WindowEvent::KeyboardInput {
+                        input:
+                            KeyboardInput {
+                                state: ElementState::Pressed,
+                                virtual_keycode: Some(VirtualKeyCode::Escape),
+                                ..
+                            },
+                        ..
+                    } => *control_flow = ControlFlow::Exit,
 
-                        WindowEvent::Resized(physical_size) => {
-                            let _ = state.resize(*physical_size);
-                        }
-
-                        WindowEvent::ScaleFactorChanged { new_inner_size, .. } => {
-                            let _ = state.resize(**new_inner_size);
-                        }
-
-                        _ => {}
-                    }
-                }
-            }
-
-            Event::RedrawRequested(window_id) if window_id == state.window().id() => {
-                state.update();
-
-                match state.render() {
-                    Ok(_) => {}
-
-                    Err(wgpu::SurfaceError::Lost | wgpu::SurfaceError::Outdated) => {
-                        state.resize(state.size).unwrap();
+                    WindowEvent::Resized(physical_size) => {
+                        let _ = state.resize(*physical_size);
                     }
 
-                    Err(wgpu::SurfaceError::OutOfMemory) => {
-                        error!("Ran out of memory");
-                        *control_flow = ControlFlow::Exit
-                    },
+                    WindowEvent::ScaleFactorChanged { new_inner_size, .. } => {
+                        let _ = state.resize(**new_inner_size);
+                    }
 
-                    Err(wgpu::SurfaceError::Timeout) => warn!("Surface timeout"),
+                    _ => {}
                 }
             }
-            Event::RedrawEventsCleared => {
-                state.window().request_redraw();
-            }
-
-            _ => {}
         }
+
+        Event::RedrawRequested(window_id) if window_id == state.window().id() => {
+            state.update();
+
+            match state.render() {
+                Ok(_) => {}
+
+                Err(wgpu::SurfaceError::Lost | wgpu::SurfaceError::Outdated) => {
+                    state.resize(state.size).unwrap();
+                }
+
+                Err(wgpu::SurfaceError::OutOfMemory) => {
+                    error!("Ran out of memory");
+                    *control_flow = ControlFlow::Exit
+                }
+
+                Err(wgpu::SurfaceError::Timeout) => warn!("Surface timeout"),
+            }
+        }
+        Event::RedrawEventsCleared => {
+            state.window().request_redraw();
+        }
+
+        _ => {}
     });
 }

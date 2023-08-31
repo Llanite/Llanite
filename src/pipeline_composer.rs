@@ -1,7 +1,7 @@
-use wgpu::{Device, RenderPipeline, SurfaceConfiguration, FragmentState};
 use crate::errors::PipelineError;
 use std::{fs, sync::Arc};
 use tracing::info;
+use wgpu::{Device, FragmentState, RenderPipeline, SurfaceConfiguration};
 
 pub struct PipelineComposer {
     pub(crate) pipeline: Result<RenderPipeline, PipelineError>,
@@ -39,23 +39,23 @@ impl PipelineComposer {
             .device
             .create_shader_module(wgpu::ShaderModuleDescriptor {
                 label: Some("Shader"),
-                source: wgpu::ShaderSource::Wgsl(shader_source.into())
+                source: wgpu::ShaderSource::Wgsl(shader_source.into()),
             });
 
         // TODO: Need to change label for each layout?
-        let layout =
-            self.device
-                .create_pipeline_layout(&wgpu::PipelineLayoutDescriptor {
-                    label: Some("Render Pipeline Layout"),
-                    bind_group_layouts: &[],
-                    push_constant_ranges: &[],
-                });
+        let layout = self
+            .device
+            .create_pipeline_layout(&wgpu::PipelineLayoutDescriptor {
+                label: Some("Render Pipeline Layout"),
+                bind_group_layouts: &[],
+                push_constant_ranges: &[],
+            });
 
         // TODO: Give extra access to options for pipeline descriptor?
         // TODO: Need to change label for each render pipeline?
         // TODO: Need to create multiple render pipelines?
-        self.pipeline = Ok(
-            self.device
+        self.pipeline = Ok(self
+            .device
             .create_render_pipeline(&wgpu::RenderPipelineDescriptor {
                 label: Some("Render Pipeline"),
                 layout: Some(&layout),
@@ -115,7 +115,6 @@ impl PipelineComposer {
                 },
 
                 multiview: None,
-            })
-        );
+            }));
     }
 }

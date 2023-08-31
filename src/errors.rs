@@ -9,7 +9,7 @@ pub enum BoosterError {
     #[error("Creating a surface failed.")]
     SurfaceFailure,
     #[error("Resizing a window failed, is the window smaller than 0px?")]
-    ResizeFailure
+    ResizeFailure,
 }
 
 #[derive(Debug, Error)]

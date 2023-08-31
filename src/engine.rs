@@ -1,8 +1,8 @@
-use crate::config::Config;
 use crate::booster;
+use crate::config::Config;
 
-use std::sync::{Arc, Mutex};
 use ecs_rust::world::World;
+use std::sync::{Arc, Mutex};
 
 use tracing::error;
 

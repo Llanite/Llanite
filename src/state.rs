@@ -1,18 +1,19 @@
-use winit::{event::*, window::Window, dpi::PhysicalSize};
-use wgpu::{Surface, Device, Queue, SurfaceConfiguration, RenderPipeline};
-use crate::errors::BoosterError;
+use crate::{errors::BoosterError, pipeline_composer::PipelineComposer};
+use wgpu::{Device, Queue, RenderPipeline, Surface, SurfaceConfiguration};
+use winit::{dpi::PhysicalSize, event::*, window::Window};
 
 // TODO: Exterminate all `unwraps`.
 
 // TODO: Only make public what needs to be public.
 pub struct State {
-    pub(crate) surface: Surface,
-    pub(crate) device: Device,
-    pub(crate) queue: Queue,
+    pub(crate) pipeline_composer: PipelineComposer,
+    pub(crate) render_pipeline: RenderPipeline,
     pub(crate) config: SurfaceConfiguration,
     pub(crate) size: PhysicalSize<u32>,
+    pub(crate) surface: Surface,
     pub(crate) window: Window,
-    pub(crate) render_pipeline: RenderPipeline,
+    pub(crate) device: Device,
+    pub(crate) queue: Queue,
 }
 
 impl State {
@@ -40,7 +41,9 @@ impl State {
                 power_preference: wgpu::PowerPreference::default(),
                 compatible_surface: Some(&surface),
                 force_fallback_adapter: false,
-            }).await.ok_or(BoosterError::NoGPU)?;
+            })
+            .await
+            .ok_or(BoosterError::NoGPU)?;
 
         let (device, queue) = adapter
             .request_device(
@@ -53,17 +56,19 @@ impl State {
                     label: None,
                 },
                 None,
-            ).await.unwrap();
-        
+            )
+            .await
+            .unwrap();
+
         let swapchain_capabilities = surface.get_capabilities(&adapter);
 
         // Only works on older version of wgpu
         // let swapchain_format = swapchain_capabilities
-            // .formats
-            // .iter()
-            // .copied()
-            // .find(|format| format.describe().srgb)
-            // .unwrap_or(swapchain_capabilities.formats[0]);
+        // .formats
+        // .iter()
+        // .copied()
+        // .find(|format| format.describe().srgb)
+        // .unwrap_or(swapchain_capabilities.formats[0]);
 
         let swapchain_format = swapchain_capabilities.formats[0];
 
@@ -79,15 +84,14 @@ impl State {
 
         surface.configure(&device, &config);
 
-        let shader = device
-            .create_shader_module(wgpu::include_wgsl!("shaders/triangle.wgsl"));
+        let shader = device.create_shader_module(wgpu::include_wgsl!("shaders/triangle.wgsl"));
 
         let render_pipeline_layout =
             device.create_pipeline_layout(&wgpu::PipelineLayoutDescriptor {
-            label: Some("Render Pipeline Layout"),
-            bind_group_layouts: &[],
-            push_constant_ranges: &[],
-        });
+                label: Some("Render Pipeline Layout"),
+                bind_group_layouts: &[],
+                push_constant_ranges: &[],
+            });
 
         let render_pipeline = device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {
             label: Some("Render Pipeline"),
@@ -152,10 +156,7 @@ impl State {
         &self.window
     }
 
-    pub fn resize(
-        &mut self,
-        new: PhysicalSize<u32>
-    ) -> Result<(), BoosterError> {
+    pub fn resize(&mut self, new: PhysicalSize<u32>) -> Result<(), BoosterError> {
         if new.width > 0 && new.height > 0 {
             self.size = new;
 
@@ -191,7 +192,7 @@ impl State {
         let mut encoder = self
             .device
             .create_command_encoder(&wgpu::CommandEncoderDescriptor {
-                label: Some("Render Encoder")
+                label: Some("Render Encoder"),
             });
 
         // Make a render pass
@@ -211,7 +212,7 @@ impl State {
                         }),
 
                         store: true,
-                    }
+                    },
                 })],
 
                 depth_stencil_attachment: None,

@@ -1,5 +1,5 @@
-use llanite::Llanite;
 use llanite::Config;
+use llanite::Llanite;
 
 fn main() {
     let llanite = Llanite::default();
