@@ -240,7 +240,12 @@ impl<'a> State<'a> {
 
             // This unwrap is okay as there should *always*, due to code before,
             // be a value in there.
-            render_pass.set_pipeline(self.pipeline_ref.unwrap());
+
+            match self.pipeline_ref {
+                Some(v) => render_pass.set_pipeline(v),
+                None => render_pass.set_pipeline(&self.render_pipeline),
+            }
+
             render_pass.draw(0..3, 0..1);
         }
 
