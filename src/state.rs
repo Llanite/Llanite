@@ -238,9 +238,6 @@ impl<'a> State<'a> {
                 depth_stencil_attachment: None,
             });
 
-            // This unwrap is okay as there should *always*, due to code before,
-            // be a value in there.
-
             match self.pipeline_ref {
                 Some(v) => render_pass.set_pipeline(v),
                 None => render_pass.set_pipeline(&self.render_pipeline),
