@@ -165,20 +165,8 @@ impl<'a> State<'a> {
 
     pub fn update_pipeline(&'a mut self) -> Result<(), PipelineError> {
         match &self.pipeline_composer.pipeline {
-            Ok(pipeline) => {
-                self.pipeline_ref = Some(pipeline);
-            }
-            Err(e) => {
-                match *e {
-                    PipelineError::InvalidPath => {
-                        return Err(PipelineError::InvalidPath);
-                    }
-
-                    PipelineError::NotInitialised => {
-                        return Err(PipelineError::NotInitialised);
-                    }
-                }
-            }
+            Ok(pipeline) => self.pipeline_ref = Some(pipeline),
+            Err(e) => return Err(*e),
         }
 
         Ok(())

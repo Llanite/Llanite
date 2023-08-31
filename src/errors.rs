@@ -12,7 +12,7 @@ pub enum BoosterError {
     ResizeFailure,
 }
 
-#[derive(Debug, Error)]
+#[derive(Debug, Error, Clone, Copy)]
 pub enum PipelineError {
     #[error("You need to initialise a Pipeline before drawing to the screen.")]
     NotInitialised,
