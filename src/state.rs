@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use crate::{errors::BoosterError, pipeline_composer::PipelineComposer};
 use wgpu::{Device, Queue, RenderPipeline, Surface, SurfaceConfiguration};
 use winit::{dpi::PhysicalSize, event::*, window::Window};
@@ -10,9 +12,9 @@ pub struct State {
     pub(crate) render_pipeline: RenderPipeline,
     pub(crate) config: SurfaceConfiguration,
     pub(crate) size: PhysicalSize<u32>,
+    pub(crate) device: Arc<Device>,
     pub(crate) surface: Surface,
     pub(crate) window: Window,
-    pub(crate) device: Device,
     pub(crate) queue: Queue,
 }
 
@@ -141,14 +143,19 @@ impl State {
             multiview: None,
         });
 
+        let device = Arc::new(device);
+
+        let pipeline_composer = PipelineComposer::new(device.clone(), config.clone());
+
         Ok(Self {
-            window,
-            surface,
-            device,
-            queue,
+            device: device.clone(),
+            pipeline_composer,
+            render_pipeline,
             config,
             size,
-            render_pipeline,
+            surface,
+            window,
+            queue,
         })
     }
 
