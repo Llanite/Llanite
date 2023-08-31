@@ -170,13 +170,13 @@ impl State {
         Ok(())
     }
 
-    pub(crate) fn input(&mut self, event: &WindowEvent) -> bool {
+    pub(crate) fn event(&mut self, event: &WindowEvent) -> bool {
         // Allow the event loop to continue despite input.
         false
     }
 
     pub(crate) fn update(&mut self) {
-        // Nothing to update yet
+        // TODO: Update world.
     }
 
     pub(crate) fn render(&mut self) -> Result<(), wgpu::SurfaceError> {

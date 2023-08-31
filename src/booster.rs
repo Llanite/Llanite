@@ -37,7 +37,7 @@ pub async fn launch(config: Config) -> Result<(), BoosterError> {
                 ref event,
                 window_id,
             } if window_id == state.window().id() => {
-                if !state.input(event) {
+                if !state.event(event) {
                     match event {
                         WindowEvent::CloseRequested
                         | WindowEvent::KeyboardInput {
