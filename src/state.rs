@@ -1,13 +1,14 @@
 use std::sync::Arc;
 
-use crate::{errors::BoosterError, pipeline_composer::PipelineComposer};
+use crate::{errors::{BoosterError, PipelineError}, pipeline_composer::PipelineComposer};
 use wgpu::{Device, Queue, RenderPipeline, Surface, SurfaceConfiguration};
 use winit::{dpi::PhysicalSize, event::*, window::Window};
+use tracing::error;
 
 // TODO: Exterminate all `unwraps`.
 
 // TODO: Only make public what needs to be public.
-pub struct State {
+pub struct State<'a> {
     pub(crate) pipeline_composer: PipelineComposer,
     pub(crate) render_pipeline: RenderPipeline,
     pub(crate) config: SurfaceConfiguration,
@@ -16,11 +17,13 @@ pub struct State {
     pub(crate) surface: Surface,
     pub(crate) window: Window,
     pub(crate) queue: Queue,
+
+    pipeline_ref: Option<&'a RenderPipeline>,
 }
 
-impl State {
+impl<'a> State<'a> {
     /// Create a new state.
-    pub async fn new(window: Window) -> Result<Self, BoosterError> {
+    pub async fn new(window: Window) -> Result<State<'static>, BoosterError> {
         let size = window.inner_size();
         let (width, height) = (size.width, size.height);
 
@@ -147,8 +150,9 @@ impl State {
 
         let pipeline_composer = PipelineComposer::new(device.clone(), config.clone());
 
-        Ok(Self {
+        Ok(State {
             device: device.clone(),
+            pipeline_ref: None,
             pipeline_composer,
             render_pipeline,
             config,
@@ -157,6 +161,27 @@ impl State {
             window,
             queue,
         })
+    }
+
+    pub fn update_pipeline(&'a mut self) -> Result<(), PipelineError> {
+        match &self.pipeline_composer.pipeline {
+            Ok(pipeline) => {
+                self.pipeline_ref = Some(pipeline);
+            }
+            Err(e) => {
+                match *e {
+                    PipelineError::InvalidPath => {
+                        return Err(PipelineError::InvalidPath);
+                    }
+
+                    PipelineError::NotInitialised => {
+                        return Err(PipelineError::NotInitialised);
+                    }
+                }
+            }
+        }
+
+        Ok(())
     }
 
     pub fn window(&self) -> &Window {
@@ -178,7 +203,7 @@ impl State {
         Ok(())
     }
 
-    pub(crate) fn event(&mut self, event: &WindowEvent) -> bool {
+    pub(crate) fn event(&mut self, _event: &WindowEvent) -> bool {
         // Allow the event loop to continue despite input.
         false
     }
@@ -225,7 +250,9 @@ impl State {
                 depth_stencil_attachment: None,
             });
 
-            render_pass.set_pipeline(&self.render_pipeline);
+            // This unwrap is okay as there should *always*, due to code before,
+            // be a value in there.
+            render_pass.set_pipeline(self.pipeline_ref.unwrap());
             render_pass.draw(0..3, 0..1);
         }
 
