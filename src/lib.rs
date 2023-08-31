@@ -1,3 +1,4 @@
+mod pipeline_composer;
 mod booster;
 mod engine;
 mod config;
