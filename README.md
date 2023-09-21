@@ -17,7 +17,7 @@ I noticed big engines were missing out features that I wanted and had interfaces
 The best support that you can give me is through issues or pull requests to help me get this engine running as quick as possible
 
 ## Scripting
-Plans for scripting are Rust DLLs and embedded LuaJIT. Another choice could be Rhai.
+Plans for scripting are Rust DLLs and embedded LuaJIT. Another choice could be Rhai if performance benefits are possible (currently it seems to be far too slow on first impressions).
 
 Benchmarks:
-![image](https://github.com/Llanite/Llanite/assets/143108602/254fd300-54c7-4688-ab3c-f55a56f0e8a0)
+![image](https://github.com/Llanite/Llanite/assets/143108602/21e815cf-eb48-4fbb-9a3b-e286731a53d3)
