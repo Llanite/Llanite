@@ -1,7 +1,7 @@
 use crate::booster;
 use crate::config::Config;
 
-use ecs_rust::world::World;
+use shipyard::World;
 use std::sync::{Arc, Mutex};
 
 use tracing::error;

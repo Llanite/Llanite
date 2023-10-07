@@ -8,10 +8,20 @@ use winit::event::*;
 use winit::event_loop::{ControlFlow, EventLoop};
 use winit::window::WindowBuilder;
 
-use tracing::{error, warn};
+use tracing::{warn, error, Level};
+use tracing_subscriber::fmt::time::LocalTime;
+use time::macros::format_description;
 
 /// Call the asynchronous launch function.
 pub fn initiate(config: Config) -> Result<(), BoosterError> {
+    let timer = LocalTime::new(format_description!("[hour]:[minute]:[second]"));
+
+    tracing_subscriber::fmt()
+        .with_max_level(Level::INFO)
+        .with_thread_names(true)
+        .with_timer(timer)
+        .init();
+
     pollster::block_on(self::launch(config))?;
 
     Ok(())
