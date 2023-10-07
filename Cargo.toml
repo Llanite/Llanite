@@ -9,8 +9,8 @@ repository = "https://github.com/Llanite/Llanite"
 description = "A layered game engine wrote for performance and flexibility."
 
 [dependencies]
-ecs_rust = "0.0.4"
 pollster = "0.3.0"
+shipyard = "0.6.2"
 thiserror = "1.0.47"
 tracing = "0.1.37"
 wgpu = "0.17.0"
