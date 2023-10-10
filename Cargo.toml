@@ -9,6 +9,7 @@ repository = "https://github.com/Llanite/Llanite"
 description = "A layered game engine wrote for performance and flexibility."
 
 [dependencies]
+anyhow = "1.0.75"
 pollster = "0.3.0"
 shipyard = { version = "0.6.2", features = ["tracing"] }
 thiserror = "1.0.47"
