@@ -4,24 +4,36 @@ use crate::config::Config;
 use shipyard::World;
 use std::sync::{Arc, Mutex};
 
+use booster::Booster;
+
 use tracing::error;
 
 pub struct Llanite {
-    world: Arc<Mutex<World>>,
+    booster: Booster,
 }
 
 impl Default for Llanite {
     fn default() -> Self {
-        let world = Arc::new(Mutex::new(World::new()));
+        let booster = Booster::new().unwrap();
 
-        Self { world }
+        Self { booster }
     }
 }
 
 impl Llanite {
     pub fn start(&self, config: Config) {
-        if let Err(e) = booster::initiate(config) {
-            error!("Error starting window: {e}");
+        let mut booster = Booster::new().unwrap();
+
+        if let Err(e) = pollster::block_on(booster.launch(config)) {
+            error!("Launch error: {e}");
+        }
+    }
+
+    pub fn update_pipeline(&mut self) {
+        if let Some(state) = &self.booster.state {
+            let mut state = state.lock().unwrap();
+
+            state.update_pipeline();
         }
     }
 }
