@@ -5,8 +5,8 @@ use wgpu::{
     ShaderSource, SurfaceConfiguration, VertexState,
 };
 
-use std::{fs, path::PathBuf, sync::Arc};
 use anyhow::Result;
+use std::{fs, path::PathBuf, sync::Arc};
 use tracing::info;
 
 pub struct PipelineComposer {
