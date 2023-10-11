@@ -1,10 +1,8 @@
-use config::Config;
+pub use config::Config;
 use time::macros::format_description;
 
+use tracing::{Level, error};
 use tracing_subscriber::fmt::time::LocalTime;
-use tracing::Level;
-
-use anyhow::Result;
 
 mod pipeline_composer;
 
@@ -16,27 +14,32 @@ mod state;
 use booster::Booster;
 
 /// The main struct for the engine.
+#[derive(Default)]
 pub struct Llanite(Booster);
 
-
 impl Llanite {
-    fn new(config: Config) -> Result<Self> {
-        let booster = Booster::new(config)?;
-
-        Ok(Self(booster))
-    }
-
-    pub fn enable_logger() {
+    pub fn enable_logger(level: Level) {
         let timer = LocalTime::new(format_description!("[hour]:[minute]:[second]"));
 
         tracing_subscriber::fmt()
-            .with_max_level(Level::INFO)
+            .with_max_level(level)
             .with_thread_names(true)
             .with_timer(timer)
             .init();
     }
 
-    pub fn start(&self) {
-        todo!("Start the engine")
+    pub fn start(&mut self, config: Config) {
+        let timer = LocalTime::new(format_description!("[hour]:[minute]:[second]"));
+
+        // Make sure there is some sort of logging for errors.
+        let _ = tracing_subscriber::fmt()
+            .with_max_level(Level::ERROR)
+            .with_thread_names(true)
+            .with_timer(timer)
+            .try_init();
+
+        if let Err(e) = self.0.launch(config) {
+            error!("Error: {e}")
+        }
     }
 }
