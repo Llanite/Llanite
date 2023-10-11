@@ -11,3 +11,8 @@ repository = "https://github.com/Llanite/Llanite"
 homepage = "https://github.com/Llanite/Llanite"
 
 [dependencies]
+
+[profile.release]
+codegen-units = 1
+strip = true
+lto = true
