@@ -4,9 +4,11 @@ use thiserror::*;
 pub enum StateError {
     #[error("GPU not found. Are you drivers installed?")]
     NoAdapter,
+    #[error("Size too small")]
+    ResizeTooSmall,
 }
 
-#[derive(Debug, Error, Clone, Copy)]
+#[derive(Debug, Error)]
 pub enum PipelineError {
     #[error("You need to initialise a Pipeline before drawing to the screen.")]
     NotInitialised,
