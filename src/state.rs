@@ -2,25 +2,28 @@ use wgpu::{
     Color, CommandEncoderDescriptor, Device, DeviceDescriptor, Instance, InstanceDescriptor,
     Limits, LoadOp, Operations, PowerPreference, Queue, RenderPassColorAttachment,
     RenderPassDescriptor, RequestAdapterOptionsBase, Surface, SurfaceConfiguration, TextureUsages,
-    TextureViewDescriptor,
+    TextureViewDescriptor, SurfaceError,
 };
+
+use tracing::error;
 
 use std::sync::Arc;
 use winit::{dpi::PhysicalSize, event::*, window::Window};
 
 use anyhow::Result;
 
-use crate::errors::{PipelineError, StateError};
+use crate::errors::{StateError, PipelineError};
 use crate::pipeline_composer::PipelineComposer;
 
 pub struct State {
     pipeline_composer: PipelineComposer,
     config: SurfaceConfiguration,
-    size: PhysicalSize<u32>,
     device: Arc<Device>,
     surface: Surface,
     window: Window,
     queue: Queue,
+
+    pub(crate) size: PhysicalSize<u32>,
 }
 
 impl State {
@@ -115,7 +118,7 @@ impl State {
         // TODO: Update world.
     }
 
-    pub fn render(&mut self) -> Result<()> {
+    pub fn render(&mut self) -> Result<(), SurfaceError> {
         let out = self.surface.get_current_texture()?;
 
         let view = out.texture.create_view(&TextureViewDescriptor::default());
@@ -152,7 +155,9 @@ impl State {
             if let Some(pipeline) = &self.pipeline_composer.pipeline {
                 render_pass.set_pipeline(pipeline);
             } else {
-                return Err(PipelineError::NotInitialised.into());
+                // TODO: Alternative error handling method
+                error!("Pipeline hasn't been initialised yet!");
+                return Err(SurfaceError::Outdated);
             }
 
             render_pass.draw(0..3, 0..1);
