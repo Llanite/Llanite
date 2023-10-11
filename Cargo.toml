@@ -11,6 +11,14 @@ repository = "https://github.com/Llanite/Llanite"
 homepage = "https://github.com/Llanite/Llanite"
 
 [dependencies]
+tracing-subscriber = { version = "0.3.17", features = ["tracing-log"] }
+
+anyhow = "1.0.75"
+pollster = "0.3.0"
+shipyard = "0.6.2"
+thiserror = "1.0.49"
+tracing = "0.1.37"
+winit = "0.28.7"
 
 [profile.release]
 codegen-units = 1
