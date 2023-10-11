@@ -1,7 +1,7 @@
-use winit::event_loop::{ControlFlow, EventLoop};
-use winit::window::WindowBuilder;
 use winit::dpi::PhysicalSize;
 use winit::event::*;
+use winit::event_loop::{ControlFlow, EventLoop};
+use winit::window::WindowBuilder;
 
 use crate::config::Config;
 
