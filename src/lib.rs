@@ -1,6 +1,10 @@
+use config::Config;
 use time::macros::format_description;
-use tracing::Level;
+
 use tracing_subscriber::fmt::time::LocalTime;
+use tracing::Level;
+
+use anyhow::Result;
 
 mod pipeline_composer;
 
@@ -9,11 +13,19 @@ mod config;
 mod errors;
 mod state;
 
+use booster::Booster;
+
 /// The main struct for the engine.
-#[derive(Default)]
-pub struct Llanite();
+pub struct Llanite(Booster);
+
 
 impl Llanite {
+    fn new(config: Config) -> Result<Self> {
+        let booster = Booster::new(config)?;
+
+        Ok(Self(booster))
+    }
+
     pub fn enable_logger() {
         let timer = LocalTime::new(format_description!("[hour]:[minute]:[second]"));
 
