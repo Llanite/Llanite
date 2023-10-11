@@ -20,6 +20,6 @@ impl Booster {
             .with_title(config.title)
             .build(&event_loop);
 
-        Ok(())
+        todo!("Launch the state");
     }
 }
