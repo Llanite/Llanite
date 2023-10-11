@@ -1,3 +1,7 @@
+use llanite::{Llanite, Config};
+
 fn main() {
-    println!("Hello, world!");
+    let mut llanite = Llanite::default();
+
+    llanite.start(Config::default());
 }
