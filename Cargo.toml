@@ -11,7 +11,7 @@ repository = "https://github.com/Llanite/Llanite"
 homepage = "https://github.com/Llanite/Llanite"
 
 [dependencies]
-tracing-subscriber = { version = "0.3.17", features = ["tracing-log"] }
+tracing-subscriber = { version = "0.3.17", features = ["tracing-log", "local-time"] }
 
 anyhow = "1.0.75"
 pollster = "0.3.0"
