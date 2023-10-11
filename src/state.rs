@@ -2,7 +2,7 @@ use wgpu::{
     Color, CommandEncoderDescriptor, Device, DeviceDescriptor, Instance, InstanceDescriptor,
     Limits, LoadOp, Operations, PowerPreference, Queue, RenderPassColorAttachment,
     RenderPassDescriptor, RequestAdapterOptionsBase, Surface, SurfaceConfiguration, TextureUsages,
-    TextureViewDescriptor, SurfaceError,
+    TextureViewDescriptor, SurfaceError, RenderPipeline,
 };
 
 use tracing::error;
@@ -16,13 +16,14 @@ use crate::errors::{StateError, PipelineError};
 use crate::pipeline_composer::PipelineComposer;
 
 pub struct State {
-    pipeline_composer: PipelineComposer,
+    backup_pipeline: RenderPipeline,
     config: SurfaceConfiguration,
     device: Arc<Device>,
     surface: Surface,
     window: Window,
     queue: Queue,
 
+    pub(crate) pipeline_composer: PipelineComposer,
     pub(crate) size: PhysicalSize<u32>,
 }
 
@@ -76,9 +77,10 @@ impl State {
 
         let mut pipeline_composer = PipelineComposer::new(device.clone(), config.clone());
 
-        pipeline_composer.new_pipeline("shaders/triangle.wgsl".into())?;
+        let backup_pipeline = pipeline_composer.create_pipeline("shaders/triangle.wgsl".into())?;
 
         let state = State {
+            backup_pipeline,
             device: device.clone(),
             pipeline_composer,
             config,
@@ -155,9 +157,12 @@ impl State {
             if let Some(pipeline) = &self.pipeline_composer.pipeline {
                 render_pass.set_pipeline(pipeline);
             } else {
+                render_pass.set_pipeline(&self.backup_pipeline);
+                tracing::warn!("Using backup pipeline");
+
                 // TODO: Alternative error handling method
-                error!("Pipeline hasn't been initialised yet!");
-                return Err(SurfaceError::Outdated);
+                // error!("Pipeline hasn't been initialised yet!");
+                // return Err(SurfaceError::Outdated);
             }
 
             render_pass.draw(0..3, 0..1);
