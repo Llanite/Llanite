@@ -1,4 +1,3 @@
-use wgpu::SurfaceError;
 use winit::dpi::PhysicalSize;
 use winit::event::*;
 use winit::event_loop::{ControlFlow, EventLoop};
@@ -15,7 +14,7 @@ use anyhow::Result;
 
 #[derive(Default)]
 pub struct Booster {
-    state: Option<Arc<Mutex<State>>>,
+    pub(crate) state: Option<Arc<Mutex<State>>>,
 }
 
 impl Booster {
