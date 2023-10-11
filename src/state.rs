@@ -1,10 +1,8 @@
 use wgpu::{
-    include_wgsl, Backends, Instance, InstanceDescriptor, PipelineLayoutDescriptor,
-    PowerPreference, RenderPipelineDescriptor, RequestAdapterOptionsBase, TextureUsages,
-    VertexState,
-};
-use wgpu::{
-    Device, DeviceDescriptor, Limits, Queue, RenderPipeline, Surface, SurfaceConfiguration,
+    Color, CommandEncoderDescriptor, Device, DeviceDescriptor, Instance, InstanceDescriptor,
+    Limits, LoadOp, Operations, PowerPreference, Queue, RenderPassColorAttachment,
+    RenderPassDescriptor, RequestAdapterOptionsBase, Surface, SurfaceConfiguration, TextureUsages,
+    TextureViewDescriptor,
 };
 
 use std::sync::Arc;
@@ -12,7 +10,7 @@ use winit::{dpi::PhysicalSize, event::*, window::Window};
 
 use anyhow::Result;
 
-use crate::errors::StateError;
+use crate::errors::{PipelineError, StateError};
 use crate::pipeline_composer::PipelineComposer;
 
 pub struct State {
@@ -73,7 +71,9 @@ impl State {
 
         let device = Arc::new(device);
 
-        let pipeline_composer = PipelineComposer::new(device.clone(), config.clone());
+        let mut pipeline_composer = PipelineComposer::new(device.clone(), config.clone());
+
+        pipeline_composer.new_pipeline("shaders/triangle.wgsl".into())?;
 
         let state = State {
             device: device.clone(),
@@ -86,5 +86,81 @@ impl State {
         };
 
         Ok(state)
+    }
+
+    pub fn window(&self) -> &Window {
+        &self.window
+    }
+
+    pub fn resize(&mut self, new: PhysicalSize<u32>) -> Result<()> {
+        if new.width <= 0 && new.height <= 0 {
+            return Err(StateError::ResizeTooSmall.into());
+        }
+
+        self.size = new;
+
+        self.config.width = new.width;
+        self.config.height = new.height;
+
+        self.surface.configure(&self.device, &self.config);
+
+        Ok(())
+    }
+
+    pub fn event(&mut self, _event: &WindowEvent) -> bool {
+        false
+    }
+
+    pub fn update(&mut self) {
+        // TODO: Update world.
+    }
+
+    pub fn render(&mut self) -> Result<()> {
+        let out = self.surface.get_current_texture()?;
+
+        let view = out.texture.create_view(&TextureViewDescriptor::default());
+
+        let mut encoder = self
+            .device
+            .create_command_encoder(&CommandEncoderDescriptor {
+                label: Some("Render Encoder"),
+            });
+
+        // Use a new scope to drop mutable reference.
+        {
+            let mut render_pass = encoder.begin_render_pass(&RenderPassDescriptor {
+                label: Some("Render Pass"),
+
+                color_attachments: &[Some(RenderPassColorAttachment {
+                    view: &view,
+                    resolve_target: None,
+                    ops: Operations {
+                        load: LoadOp::Clear(Color {
+                            r: 0.015,
+                            g: 0.015,
+                            b: 0.015,
+                            a: 1.0,
+                        }),
+
+                        store: true,
+                    },
+                })],
+
+                depth_stencil_attachment: None,
+            });
+
+            if let Some(pipeline) = &self.pipeline_composer.pipeline {
+                render_pass.set_pipeline(pipeline);
+            } else {
+                return Err(PipelineError::NotInitialised.into());
+            }
+
+            render_pass.draw(0..3, 0..1);
+        }
+
+        self.queue.submit(std::iter::once(encoder.finish()));
+        out.present();
+
+        Ok(())
     }
 }
