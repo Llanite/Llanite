@@ -3,4 +3,11 @@ name = "llanite"
 version = "0.1.0"
 edition = "2021"
 
+authors = [ "Ben McAvoy <ben.mcavoy@tutanota.com>" ]
+license = "MIT"
+
+description = "A layered game engine wrote for performance and flexibility."
+repository = "https://github.com/Llanite/Llanite"
+homepage = "https://github.com/Llanite/Llanite"
+
 [dependencies]
