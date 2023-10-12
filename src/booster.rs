@@ -6,6 +6,7 @@ use winit::window::WindowBuilder;
 use tracing::{warn, error};
 
 use crate::config::Config;
+use crate::controller::Controller;
 use crate::state::State;
 
 use std::sync::{Arc, Mutex};
@@ -15,6 +16,7 @@ use anyhow::Result;
 #[derive(Default)]
 pub struct Booster {
     pub(crate) state: Option<Arc<Mutex<State>>>,
+    pub(crate) controller: Option<Controller>,
 }
 
 impl Booster {
