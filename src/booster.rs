@@ -3,7 +3,7 @@ use winit::event::*;
 use winit::event_loop::{ControlFlow, EventLoop};
 use winit::window::WindowBuilder;
 
-use tracing::{warn, error};
+use tracing::{error, warn};
 
 use crate::config::Config;
 use crate::controller::Controller;

@@ -4,7 +4,7 @@ use crate::state::State;
 /// Each function contained here will be ran before the event loop.
 #[derive(Default)]
 pub struct Controller {
-    pub stages: Vec<Box<dyn Fn(&'static mut State)>>
+    pub stages: Vec<Box<dyn Fn(&'static mut State)>>,
 }
 
 impl Controller {

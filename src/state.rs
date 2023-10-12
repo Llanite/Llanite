@@ -1,8 +1,8 @@
 use wgpu::{
     Color, CommandEncoderDescriptor, Device, DeviceDescriptor, Instance, InstanceDescriptor,
     Limits, LoadOp, Operations, PowerPreference, Queue, RenderPassColorAttachment,
-    RenderPassDescriptor, RequestAdapterOptionsBase, Surface, SurfaceConfiguration, TextureUsages,
-    TextureViewDescriptor, SurfaceError, RenderPipeline,
+    RenderPassDescriptor, RenderPipeline, RequestAdapterOptionsBase, Surface, SurfaceConfiguration,
+    SurfaceError, TextureUsages, TextureViewDescriptor,
 };
 
 use tracing::error;
@@ -12,7 +12,7 @@ use winit::{dpi::PhysicalSize, event::*, window::Window};
 
 use anyhow::Result;
 
-use crate::errors::{StateError, PipelineError};
+use crate::errors::{PipelineError, StateError};
 use crate::pipeline_composer::PipelineComposer;
 
 pub struct State {
