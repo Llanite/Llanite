@@ -5,6 +5,8 @@ use winit::window::WindowBuilder;
 
 use tracing::{error, warn};
 
+use shipyard::World;
+
 use crate::config::Config;
 use crate::controller::Controller;
 use crate::state::State;
@@ -17,6 +19,7 @@ use anyhow::Result;
 pub struct Booster {
     pub(crate) state: Option<Arc<Mutex<State>>>,
     pub(crate) controller: Option<Controller>,
+    pub(crate) world: World,
 }
 
 impl Booster {

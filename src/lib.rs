@@ -11,7 +11,6 @@ use booster::Booster;
 use config::Config;
 use config::LogConfig;
 use prelude::Controller;
-use std::path::PathBuf;
 use time::macros::format_description;
 use tracing::{error, info, Level};
 use tracing_subscriber::fmt::time::LocalTime;

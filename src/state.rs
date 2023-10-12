@@ -5,14 +5,12 @@ use wgpu::{
     SurfaceError, TextureUsages, TextureViewDescriptor,
 };
 
-use tracing::error;
-
 use std::sync::Arc;
 use winit::{dpi::PhysicalSize, event::*, window::Window};
 
 use anyhow::Result;
 
-use crate::errors::{PipelineError, StateError};
+use crate::errors::StateError;
 use crate::pipeline_composer::PipelineComposer;
 
 pub struct State {
@@ -154,15 +152,12 @@ impl State {
                 depth_stencil_attachment: None,
             });
 
+            // TODO: Alternative error handling method
             if let Some(pipeline) = &self.pipeline_composer.pipeline {
                 render_pass.set_pipeline(pipeline);
             } else {
                 render_pass.set_pipeline(&self.backup_pipeline);
                 tracing::warn!("Using backup pipeline");
-
-                // TODO: Alternative error handling method
-                // error!("Pipeline hasn't been initialised yet!");
-                // return Err(SurfaceError::Outdated);
             }
 
             render_pass.draw(0..3, 0..1);
