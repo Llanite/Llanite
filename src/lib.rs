@@ -1,6 +1,7 @@
 use std::path::PathBuf;
 
 pub use config::Config;
+use config::LogConfig;
 use time::macros::format_description;
 
 use tracing::{Level, error, info};
@@ -8,6 +9,7 @@ use tracing_subscriber::fmt::time::LocalTime;
 
 mod pipeline_composer;
 
+mod controller;
 mod booster;
 mod config;
 mod errors;
@@ -20,16 +22,17 @@ use booster::Booster;
 pub struct Llanite(Booster);
 
 impl Llanite {
-    pub fn enable_logger(level: Level) {
+    pub fn enable_logger(log_config: LogConfig) {
         let timer = LocalTime::new(format_description!("[hour]:[minute]:[second]"));
 
         tracing_subscriber::fmt()
-            .with_max_level(level)
-            .with_thread_names(true)
+            .with_thread_names(log_config.thread_names)
+            .with_line_number(log_config.line_numbers)
+            .with_max_level(log_config.level)
             .with_timer(timer)
             .init();
 
-        info!("Started logging with level {level:?}");
+        info!("Started logging with level {:?}", log_config.level);
     }
 
     pub fn start(&mut self, config: Config) {
@@ -37,7 +40,8 @@ impl Llanite {
 
         // Make sure there is some sort of logging for errors.
         let _ = tracing_subscriber::fmt()
-            .with_max_level(Level::ERROR)
+            .with_line_number(true)
+            .with_max_level(Level::WARN)
             .with_thread_names(true)
             .with_timer(timer)
             .try_init();
