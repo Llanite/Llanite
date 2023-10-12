@@ -5,6 +5,8 @@ mod errors;
 mod pipeline_composer;
 mod state;
 
+pub mod prelude;
+
 use booster::Booster;
 use config::Config;
 use config::LogConfig;
