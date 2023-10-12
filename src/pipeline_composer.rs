@@ -28,7 +28,7 @@ impl PipelineComposer {
     pub fn new_pipeline(&mut self, path: PathBuf) -> Result<()> {
         self.pipeline = Some(self.create_pipeline(path.clone())?);
 
-        tracing::error!("Set pipeline to {path:?}");
+        info!("Set pipeline to {path:?}");
 
         Ok(())
     }
@@ -36,7 +36,7 @@ impl PipelineComposer {
     pub(crate) fn create_pipeline(&mut self, path: PathBuf) -> Result<RenderPipeline> {
         let source = fs::read_to_string(&path)?;
 
-        tracing::error!("Read shader source {path:?}");
+        info!("Read shader source {path:?}");
 
         let shader = self.device.create_shader_module(ShaderModuleDescriptor {
             label: Some("Shader"),
