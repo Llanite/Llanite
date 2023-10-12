@@ -23,7 +23,7 @@ pub struct State {
     window: Window,
     queue: Queue,
 
-    pub(crate) pipeline_composer: PipelineComposer,
+    pub pipeline_composer: PipelineComposer,
     pub(crate) size: PhysicalSize<u32>,
 }
 
