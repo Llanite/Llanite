@@ -1,29 +1,17 @@
-use std::path::PathBuf;
-
-use config::LogConfig;
-use time::macros::format_description;
-
-use tracing::{Level, error, info};
-use tracing_subscriber::fmt::time::LocalTime;
-
-mod pipeline_composer;
-
-mod controller;
 mod booster;
 mod config;
+mod controller;
 mod errors;
+mod pipeline_composer;
 mod state;
-
-pub mod prelude {
-    pub use crate::controller::Controller;
-    pub use crate::Llanite;
-
-    pub use crate::config::{LogConfig, Config};
-    pub use tracing;
-}
 
 use booster::Booster;
 use config::Config;
+use config::LogConfig;
+use std::path::PathBuf;
+use time::macros::format_description;
+use tracing::{error, info, Level};
+use tracing_subscriber::fmt::time::LocalTime;
 
 /// The main struct for the engine.
 #[derive(Default)]
@@ -61,7 +49,12 @@ impl Llanite {
 
     pub fn set_pipeline(&mut self, shader_path: PathBuf) {
         if let Some(state) = &self.0.state {
-            state.lock().unwrap().pipeline_composer.new_pipeline(shader_path).unwrap();
+            state
+                .lock()
+                .unwrap()
+                .pipeline_composer
+                .new_pipeline(shader_path)
+                .unwrap();
         }
     }
 }
