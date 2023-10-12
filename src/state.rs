@@ -1,3 +1,4 @@
+use shipyard::World;
 use wgpu::{
     Color, CommandEncoderDescriptor, Device, DeviceDescriptor, Instance, InstanceDescriptor,
     Limits, LoadOp, Operations, PowerPreference, Queue, RenderPassColorAttachment,
@@ -22,7 +23,9 @@ pub struct State {
     queue: Queue,
 
     pub pipeline_composer: PipelineComposer,
+
     pub(crate) size: PhysicalSize<u32>,
+    pub(crate) world: World,
 }
 
 impl State {
@@ -77,6 +80,8 @@ impl State {
 
         let backup_pipeline = pipeline_composer.create_pipeline("shaders/triangle.wgsl".into())?;
 
+        let world = World::default();
+
         let state = State {
             backup_pipeline,
             device: device.clone(),
@@ -86,6 +91,7 @@ impl State {
             surface,
             window,
             queue,
+            world,
         };
 
         Ok(state)
