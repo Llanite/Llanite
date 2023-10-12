@@ -20,7 +20,7 @@ pub struct Booster {
 }
 
 impl Booster {
-    pub fn launch(&mut self, config: Config) -> Result<()> {
+    pub fn launch(&mut self, config: Config, controller: Controller) -> Result<()> {
         let (width, height) = (config.width, config.height);
 
         let event_loop = EventLoop::new();
@@ -29,8 +29,17 @@ impl Booster {
             .with_title(config.title)
             .build(&event_loop)?;
 
-        let state = Arc::new(Mutex::new(pollster::block_on(State::new(window))?));
+        let state = pollster::block_on(State::new(window))?;
+        let state = Arc::new(Mutex::new(state));
         self.state = Some(state.clone());
+
+        self.controller = Some(controller);
+
+        if let Some(controller) = &self.controller {
+            if let Some(state) = &self.state {
+                controller.run(state.clone());
+            }
+        }
 
         event_loop.run(move |event, _, control_flow| match event {
             Event::WindowEvent {
