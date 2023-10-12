@@ -10,6 +10,7 @@ pub mod prelude;
 use booster::Booster;
 use config::Config;
 use config::LogConfig;
+use prelude::Controller;
 use std::path::PathBuf;
 use time::macros::format_description;
 use tracing::{error, info, Level};
@@ -33,7 +34,7 @@ impl Llanite {
         info!("Started logging with level {:?}", log_config.level);
     }
 
-    pub fn start(&mut self, config: Config) {
+    pub fn start(&mut self, config: Config, controller: Controller) {
         let timer = LocalTime::new(format_description!("[hour]:[minute]:[second]"));
 
         // Make sure there is some sort of logging for errors.
@@ -44,19 +45,8 @@ impl Llanite {
             .with_timer(timer)
             .try_init();
 
-        if let Err(e) = self.0.launch(config) {
+        if let Err(e) = self.0.launch(config, controller) {
             error!("Error: {e}")
-        }
-    }
-
-    pub fn set_pipeline(&mut self, shader_path: PathBuf) {
-        if let Some(state) = &self.0.state {
-            state
-                .lock()
-                .unwrap()
-                .pipeline_composer
-                .new_pipeline(shader_path)
-                .unwrap();
         }
     }
 }
