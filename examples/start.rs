@@ -3,5 +3,5 @@ use llanite::prelude::*;
 fn main() {
     let mut llanite = Llanite::default();
 
-    llanite.start(Config::default());
+    llanite.start(Config::default(), Controller::default());
 }
