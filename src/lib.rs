@@ -1,6 +1,5 @@
 use std::path::PathBuf;
 
-pub use config::Config;
 use config::LogConfig;
 use time::macros::format_description;
 
@@ -15,7 +14,16 @@ mod config;
 mod errors;
 mod state;
 
+pub mod prelude {
+    pub use crate::controller::Controller;
+    pub use crate::Llanite;
+
+    pub use crate::config::{LogConfig, Config};
+    pub use tracing;
+}
+
 use booster::Booster;
+use config::Config;
 
 /// The main struct for the engine.
 #[derive(Default)]
