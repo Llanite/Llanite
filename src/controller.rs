@@ -1,4 +1,5 @@
 use crate::state::State;
+use std::sync::{Arc, Mutex};
 
 /// Contains all of the startup code.
 /// Each function contained here will be ran before the event loop.
@@ -15,9 +16,11 @@ impl Controller {
         self.stages.push(Box::new(f));
     }
 
-    pub fn run(&self, state: &'static mut State) {
+    pub fn run(&self, state: Arc<Mutex<State>>) {
+        let mut state = state.lock().unwrap();
+
         for stage in &self.stages {
-            stage(state);
+            stage(&mut *state);
         }
     }
 }
