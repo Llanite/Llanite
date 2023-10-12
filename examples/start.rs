@@ -1,4 +1,4 @@
-use llanite::{Llanite, Config};
+use llanite::prelude::*;
 
 fn main() {
     let mut llanite = Llanite::default();
