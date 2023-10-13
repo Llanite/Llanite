@@ -5,6 +5,7 @@ mod errors;
 mod pipeline_composer;
 mod state;
 mod vertex;
+mod stage_api;
 
 pub mod prelude;
 
