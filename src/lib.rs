@@ -4,6 +4,7 @@ mod controller;
 mod errors;
 mod pipeline_composer;
 mod state;
+mod vertex;
 
 pub mod prelude;
 
