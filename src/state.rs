@@ -116,7 +116,7 @@ impl State {
     }
 
     pub fn resize(&mut self, new: PhysicalSize<u32>) -> Result<()> {
-        if new.width <= 0 && new.height <= 0 {
+        if new.width == 0 || new.height == 0 {
             return Err(StateError::ResizeTooSmall.into());
         }
 
