@@ -81,7 +81,8 @@ impl State {
 
         let mut pipeline_composer = PipelineComposer::new(device.clone(), config.clone());
 
-        let backup_pipeline = pipeline_composer.create_pipeline("shaders/triangle.wgsl".into())?;
+        // Passing `None` makes it use a backup pipeline.
+        let backup_pipeline = pipeline_composer.create_pipeline(None)?;
 
         let world = World::default();
 

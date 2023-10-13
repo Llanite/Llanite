@@ -6,10 +6,14 @@ use wgpu::{
 };
 
 use anyhow::Result;
-use std::{fs, path::PathBuf, sync::Arc};
+
 use tracing::info;
 
+use std::sync::Arc;
+
 use crate::vertex::Vertex;
+
+const BACKUP_SOURCE: &str = include_str!("../shaders/triangle.wgsl");
 
 pub struct PipelineComposer {
     pub(crate) pipeline: Option<RenderPipeline>,
@@ -27,16 +31,19 @@ impl PipelineComposer {
         }
     }
 
-    pub fn new_pipeline(&mut self, path: PathBuf) -> Result<()> {
-        self.pipeline = Some(self.create_pipeline(path.clone())?);
+    pub fn new_pipeline(&mut self, path: Option<&str>) -> Result<()> {
+        self.pipeline = Some(self.create_pipeline(path)?);
 
         info!("Set pipeline to {path:?}");
 
         Ok(())
     }
 
-    pub(crate) fn create_pipeline(&mut self, path: PathBuf) -> Result<RenderPipeline> {
-        let source = fs::read_to_string(&path)?;
+    pub(crate) fn create_pipeline(&mut self, path: Option<&str>) -> Result<RenderPipeline> {
+        let source = match path {
+            Some(v) => std::fs::read_to_string(v)?,
+            None => BACKUP_SOURCE.to_string(),
+        };
 
         info!("Read shader source {path:?}");
 
@@ -63,7 +70,7 @@ impl PipelineComposer {
                     module: &shader,
 
                     entry_point: "vs_main",
-                    buffers: &[ Vertex::desc() ],
+                    buffers: &[Vertex::desc()],
                 },
 
                 fragment: Some(FragmentState {
