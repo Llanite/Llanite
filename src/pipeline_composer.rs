@@ -9,6 +9,8 @@ use anyhow::Result;
 use std::{fs, path::PathBuf, sync::Arc};
 use tracing::info;
 
+use crate::vertex::Vertex;
+
 pub struct PipelineComposer {
     pub(crate) pipeline: Option<RenderPipeline>,
 
@@ -61,7 +63,7 @@ impl PipelineComposer {
                     module: &shader,
 
                     entry_point: "vs_main",
-                    buffers: &[],
+                    buffers: &[ Vertex::desc() ],
                 },
 
                 fragment: Some(FragmentState {
