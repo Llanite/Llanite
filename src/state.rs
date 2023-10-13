@@ -1,9 +1,9 @@
 use shipyard::World;
 use wgpu::{
-    Color, CommandEncoderDescriptor, Device, DeviceDescriptor, Instance, InstanceDescriptor,
-    Limits, LoadOp, Operations, PowerPreference, Queue, RenderPassColorAttachment,
-    RenderPassDescriptor, RenderPipeline, RequestAdapterOptionsBase, Surface, SurfaceConfiguration,
-    SurfaceError, TextureUsages, TextureViewDescriptor,
+    util::DeviceExt, Buffer, Color, CommandEncoderDescriptor, Device, DeviceDescriptor, Instance,
+    InstanceDescriptor, Limits, LoadOp, Operations, PowerPreference, Queue,
+    RenderPassColorAttachment, RenderPassDescriptor, RenderPipeline, RequestAdapterOptionsBase,
+    Surface, SurfaceConfiguration, SurfaceError, TextureUsages, TextureViewDescriptor,
 };
 
 use std::sync::Arc;
@@ -13,10 +13,12 @@ use anyhow::Result;
 
 use crate::errors::StateError;
 use crate::pipeline_composer::PipelineComposer;
+use crate::vertex::VERTICES;
 
 pub struct State {
     backup_pipeline: RenderPipeline,
     config: SurfaceConfiguration,
+    vertex_buffer: Buffer,
     device: Arc<Device>,
     surface: Surface,
     window: Window,
@@ -82,10 +84,17 @@ impl State {
 
         let world = World::default();
 
+        let vertex_buffer = device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
+            label: Some("Vertex Buffer"),
+            contents: bytemuck::cast_slice(VERTICES),
+            usage: wgpu::BufferUsages::VERTEX,
+        });
+
         let state = State {
             backup_pipeline,
             device: device.clone(),
             pipeline_composer,
+            vertex_buffer,
             config,
             size,
             surface,
