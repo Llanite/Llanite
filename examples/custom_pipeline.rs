@@ -1,5 +1,4 @@
 use llanite::prelude::*;
-use tracing::Level;
 
 fn main() {
     Llanite::enable_logger(LogConfig {
@@ -10,12 +9,7 @@ fn main() {
     let mut controller = Controller::default();
     let mut llanite = Llanite::default();
 
-    controller.add_stage(|state| {
-        state
-            .pipeline_composer
-            .new_pipeline(Some("./shaders/custom.wgsl"))
-            .unwrap();
-    });
+    controller.add_stage(|state| new_pipeline!(state, "./shaders/custom.wgsl"));
 
     llanite.start(Config::default(), controller);
 }
