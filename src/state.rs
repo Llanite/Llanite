@@ -20,6 +20,7 @@ pub struct State {
     config: SurfaceConfiguration,
     vertex_buffer: Buffer,
     device: Arc<Device>,
+    num_vertices: u32,
     surface: Surface,
     window: Window,
     queue: Queue,
@@ -90,7 +91,10 @@ impl State {
             usage: wgpu::BufferUsages::VERTEX,
         });
 
+        let num_vertices = VERTICES.len();
+
         let state = State {
+            num_vertices: num_vertices as u32,
             backup_pipeline,
             device: device.clone(),
             pipeline_composer,
@@ -175,7 +179,8 @@ impl State {
                 tracing::warn!("Using backup pipeline");
             }
 
-            render_pass.draw(0..3, 0..1);
+            render_pass.set_vertex_buffer(0, self.vertex_buffer.slice(..));
+            render_pass.draw(0..self.num_vertices, 0..1);
         }
 
         self.queue.submit(std::iter::once(encoder.finish()));
