@@ -20,7 +20,7 @@ impl Controller {
         let mut state = state.lock().unwrap();
 
         for stage in &self.stages {
-            stage(&mut *state);
+            stage(&mut state);
         }
     }
 }
