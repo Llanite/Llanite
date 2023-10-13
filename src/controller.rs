@@ -1,11 +1,13 @@
 use crate::state::State;
 use std::sync::{Arc, Mutex};
 
+type Stage = Box<dyn Fn(&mut State)>;
+
 /// Contains all of the startup code.
 /// Each function contained here will be ran before the event loop.
 #[derive(Default)]
 pub struct Controller {
-    pub stages: Vec<Box<dyn Fn(&mut State)>>,
+    pub stages: Vec<Stage>,
 }
 
 impl Controller {
