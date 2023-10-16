@@ -2,10 +2,10 @@ use llanite::prelude::*;
 use tracing::Level;
 
 fn main() {
-    Llanite::enable_logger(LogConfig {
+    enable_logging(Some(LogConfig {
         level: Level::INFO,
         ..Default::default()
-    });
+    }));
 
     let mut controller = Controller::default();
     let mut llanite = Llanite::default();
