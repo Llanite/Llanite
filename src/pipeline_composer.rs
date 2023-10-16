@@ -31,7 +31,12 @@ impl PipelineComposer {
     pub fn new_pipeline(&mut self, path: Option<&str>) -> Result<()> {
         self.pipeline = Some(self.create_pipeline(path)?);
 
-        info!("Set pipeline to {path:?}");
+        let path = match path {
+            Some(v) => v.to_string(),
+            None => "backup.".to_string(),
+        };
+
+        info!("Read pipeline {path}");
 
         Ok(())
     }
