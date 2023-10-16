@@ -5,13 +5,10 @@ use wgpu::{
     ShaderSource, SurfaceConfiguration, VertexState,
 };
 
-use anyhow::Result;
-
-use tracing::info;
-
-use std::sync::Arc;
-
 use crate::vertex::Vertex;
+use anyhow::Result;
+use std::sync::Arc;
+use tracing::info;
 
 const BACKUP_SOURCE: &str = include_str!("../shaders/triangle.wgsl");
 
