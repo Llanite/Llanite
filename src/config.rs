@@ -16,6 +16,7 @@ impl Default for Config {
     }
 }
 
+#[derive(Debug)]
 pub struct LogConfig {
     pub thread_names: bool,
     pub line_numbers: bool,
