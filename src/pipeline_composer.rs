@@ -42,7 +42,12 @@ impl PipelineComposer {
             None => BACKUP_SOURCE.to_string(),
         };
 
-        info!("Read shader source {path:?}");
+        let path = match path {
+            Some(v) => v.to_string(),
+            None => "backup.".to_string(),
+        };
+
+        info!("Read shader source {path}");
 
         let shader = self.device.create_shader_module(ShaderModuleDescriptor {
             label: Some("Shader"),
