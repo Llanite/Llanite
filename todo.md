@@ -1,6 +1,6 @@
 # TODO list
 
-* [ ] - Full install Bevy ECS into the engine instead of Shipyard
+* [ ] - Fully install Bevy ECS into the engine instead of Shipyard
 * [ ] - Parse vertex buffer data between CPU (Bevy ECS) and the GPU.
 * [ ] - Allow storing textures and rendering them to models/shapes.
 * [ ] - Allow custom vertices to be pushed into the engine.
