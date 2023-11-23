@@ -1,3 +1,4 @@
+use std::fmt::Display;
 use tracing::Level;
 
 pub struct Config {
@@ -21,6 +22,18 @@ pub struct LogConfig {
     pub thread_names: bool,
     pub line_numbers: bool,
     pub level: Level,
+}
+
+impl Display for LogConfig {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        writeln!(f, "")?;
+
+        writeln!(f, "    ├─ Display thread names : {}", self.thread_names)?;
+        writeln!(f, "    ├─ Display line numbers : {}", self.line_numbers)?;
+        writeln!(f, "    └─ Log filter level     : {}", self.level)?;
+
+        Ok(())
+    }
 }
 
 impl Default for LogConfig {

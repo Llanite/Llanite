@@ -26,6 +26,6 @@ pub fn enable_logging(log_config: Option<LogConfig>) {
         .try_init();
 
     if result.is_ok() {
-        info!("Logging started with config: {log_config:#?}\n")
+        info!("Logging started with config: {log_config}\n")
     }
 }
